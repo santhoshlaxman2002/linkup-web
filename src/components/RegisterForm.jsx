@@ -1,0 +1,193 @@
+import { useState } from "react";
+import { Formik, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { Input, Button, DatePicker, ConfigProvider } from "antd";
+import { useGradientButtonStyle } from "../styles/gradientButton";
+import { GoogleOutlined, GithubOutlined } from "@ant-design/icons";
+import { IoMailOutline } from "react-icons/io5";
+import { RiLockPasswordLine } from "react-icons/ri";
+import { Link } from "react-router-dom";
+
+const initialValues = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  dob: null,
+  username: "",
+  password: "",
+  confirmPassword: "",
+};
+
+const validationSchema = Yup.object({
+  firstName: Yup.string().required("First name is required"),
+  lastName: Yup.string().required("Last name is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  dob: Yup.date().nullable().required("Date of birth is required"),
+  username: Yup.string().required("User name is required"),
+  password: Yup.string().min(8, "At least 8 characters").required("Password is required"),
+  confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match").required("Confirm Password is required"),
+});
+
+export function RegisterForm({ onNavigateToLogin }) {
+  const [loading, setLoading] = useState(false);
+  const { styles } = useGradientButtonStyle();
+
+  const handleSubmit = (values) => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      alert("Registration successful (demo)");
+    }, 1500);
+  };
+
+  return (
+    <>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ values, handleChange, handleSubmit, setFieldValue }) => (
+          <Form onSubmit={handleSubmit} className="space-y-5">
+          <div className="flex flex-row gap-4">
+            <div className="flex-1">
+              <Input
+                name="firstName"
+                placeholder="First Name"
+                value={values.firstName}
+                onChange={handleChange}
+                size="large"
+                className="w-full"
+              />
+              <div className="text-left mt-1 pl-1">
+                <ErrorMessage name="firstName" component="div" className="text-red-500 text-sm" />
+              </div>
+            </div>
+            
+            <div className="flex-1">
+              <Input
+                name="lastName"
+                placeholder="Last Name"
+                value={values.lastName}
+                onChange={handleChange}
+                size="large"
+                className="w-full"
+              />
+              <div className="text-left mt-1 pl-1">
+                <ErrorMessage name="lastName" component="div" className="text-red-500 text-sm" />
+              </div>
+            </div>
+          </div>
+            <div>
+              <Input
+                name="email"
+                type="email"
+                placeholder="Email"
+                prefix={<IoMailOutline size={22} className="mr-1"/>}
+                value={values.email}
+                onChange={handleChange}
+                size="large"
+              />
+              <div className="text-left mt-1 pl-1">
+                <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
+              </div>
+            </div>
+            <div>
+              <DatePicker
+                name="dob"
+                placeholder="Date of Birth"
+                style={{ width: '100%' }}
+                size="large"
+                value={values.dob}
+                onChange={date => setFieldValue("dob", date)}
+                format="YYYY-MM-DD"
+              />
+              <div className="text-left mt-1 pl-1">
+                <ErrorMessage name="dob" component="div" className="text-red-500 text-sm" />
+              </div>
+            </div>
+            {/* <div>
+              <Input
+                name="username"
+                placeholder="User Name"
+                value={values.username}
+                onChange={handleChange}
+                autoComplete="username"
+                size="large"
+              />
+              <div className="text-left mt-1 pl-1">
+                <ErrorMessage name="username" component="div" className="text-red-500 text-sm" />
+              </div>
+            </div> */}
+            <div>
+              <Input.Password
+                name="password"
+                placeholder="Password"
+                prefix={<RiLockPasswordLine size={20} className="mr-1"/>}
+                value={values.password}
+                onChange={handleChange}
+                autoComplete="current-password"
+                size="large"
+              />
+              <div className="text-left mt-1 pl-1">
+                <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
+              </div>
+            </div>
+            <div>
+              <Input.Password
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                prefix={<RiLockPasswordLine size={20} className="mr-1" />}
+                value={values.confirmPassword}
+                onChange={handleChange}
+                autoComplete="new-password"
+                size="large"
+              />
+              <div className="text-left mt-1 pl-1">
+                <ErrorMessage
+                  name="confirmPassword"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+              </div>
+            </div>
+            <ConfigProvider button={{ className: styles.gradientButton }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+                block
+                size="large"
+                className="h-11 text-white rounded-lg shadow-md"
+              >
+                Register
+              </Button>
+            </ConfigProvider>
+          </Form>
+        )}
+      </Formik>
+      {/* Divider */}
+      <div className="relative my-4">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-300" />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-4 bg-white text-gray-500">Or continue with</span>
+        </div>
+      </div>
+      {/* Social login buttons */}
+      <div className="grid grid-cols-2 gap-3">
+        <Button icon={<GoogleOutlined />} block>
+          Google
+        </Button>
+        <Button icon={<GithubOutlined />} block>
+          GitHub
+        </Button>
+      </div>
+      <div className="flex justify-center items-center text-center text-sm text-gray-600 pt-1.5 pb-2.5">
+        Already have an account?{" "}
+        <Link to="/login" className="text-indigo-600 hover:text-indigo-400 ml-1 cursor-pointer">Sign in</Link>
+      </div>
+    </>
+  );
+}
