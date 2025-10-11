@@ -1,34 +1,49 @@
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Input, Button, Checkbox, ConfigProvider } from "antd";
+import { Input, Button, Checkbox, ConfigProvider, Alert } from "antd";
 import { IoMailOutline } from "react-icons/io5";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { GoogleOutlined, GithubOutlined } from "@ant-design/icons";
 import { useGradientButtonStyle } from "../styles/gradientButton";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../features/auth/authThunks";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const initialValues = {
-  email: "",
+  loginName: "",
   password: "",
   rememberMe: false,
 };
 
 const validationSchema = Yup.object({
-  email: Yup.string().email("Invalid email").required("Email is required"),
+  loginName: Yup.string()
+  .test(
+    "is-valid-login",
+    "Enter a valid email or username",
+    (value) => {
+      if (!value) return false;
+      // allow if email OR username (letters/numbers/._-)
+      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+      const isUsername = /^[a-zA-Z0-9._-]+$/.test(value);
+      return isEmail || isUsername;
+    }
+  )
+  .required("User name or email is required"),
   password: Yup.string().min(8, "At least 8 characters").required("Password is required"),
 });
 
 export function LoginForm() {
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading, error, successMessage } = useSelector((state) => state.auth);
   const { styles } = useGradientButtonStyle();
 
-  const handleSubmit = (values) => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      alert("Login successful (demo)");
-    }, 1500);
+  const handleSubmit = async (values) => {
+    const result = await dispatch(loginUser(values));
+    if (result.meta.requestStatus === "fulfilled") {
+      navigate("/welcome");
+    }
   };
 
   return (
@@ -40,10 +55,21 @@ export function LoginForm() {
       >
         {({ values, handleChange, handleSubmit, setFieldValue }) => (
           <Form onSubmit={handleSubmit} className="space-y-5">
+            {error && (
+              <div className="mb-4">
+                <Alert message={error} type="error" showIcon />
+              </div>
+            )}
+
+            {successMessage && (
+              <div className="mb-4">
+                <Alert message={successMessage} type="success" showIcon />
+              </div>
+            )}
             <div>
               <Input
-                name="email"
-                type="email"
+                name="loginName"
+                type="text"
                 placeholder="User name or email"
                 prefix={<IoMailOutline size={22} className="mr-1"/>}
                 value={values.email}
@@ -52,7 +78,7 @@ export function LoginForm() {
                 size="large"
               />
               <div className="text-left mt-1 pl-1">
-                <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
+                <ErrorMessage name="loginName" component="div" className="text-red-500 text-sm" />
               </div>
             </div>
             <div>

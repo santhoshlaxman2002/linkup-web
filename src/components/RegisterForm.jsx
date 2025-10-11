@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Input, Button, DatePicker, ConfigProvider } from "antd";
+import { Input, Button, DatePicker, ConfigProvider, Alert } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "../features/auth/authThunks";
 import { useGradientButtonStyle } from "../styles/gradientButton";
 import { GoogleOutlined, GithubOutlined } from "@ant-design/icons";
 import { IoMailOutline } from "react-icons/io5";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const initialValues = {
   firstName: "",
   lastName: "",
   email: "",
-  dob: null,
+  dateOfBirth: null,
   username: "",
   password: "",
   confirmPassword: "",
@@ -22,22 +24,31 @@ const validationSchema = Yup.object({
   firstName: Yup.string().required("First name is required"),
   lastName: Yup.string().required("Last name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
-  dob: Yup.date().nullable().required("Date of birth is required"),
+  dateOfBirth: Yup.date().nullable().required("Date of birth is required"),
   username: Yup.string().required("User name is required"),
   password: Yup.string().min(8, "At least 8 characters").required("Password is required"),
   confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match").required("Confirm Password is required"),
 });
 
 export function RegisterForm({ onNavigateToLogin }) {
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading, error, successMessage } = useSelector((state) => state.auth);
   const { styles } = useGradientButtonStyle();
 
-  const handleSubmit = (values) => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      alert("Registration successful (demo)");
-    }, 1500);
+  const handleSubmit = async (values) => {
+    const payload = {
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      dateOfBirth: values.dateOfBirth,
+      username: values.username,
+      password: values.password,
+    };
+    const result = await dispatch(registerUser(payload));
+      if (result.meta.requestStatus === "fulfilled") {
+      navigate("/welcome");
+    }
   };
 
   return (
@@ -49,6 +60,12 @@ export function RegisterForm({ onNavigateToLogin }) {
       >
         {({ values, handleChange, handleSubmit, setFieldValue }) => (
           <Form onSubmit={handleSubmit} className="space-y-5">
+          {error && (
+            <div className="mb-4">
+              <Alert message={error} type="error" showIcon />
+            </div>
+          )}
+
           <div className="flex flex-row gap-4">
             <div className="flex-1">
               <Input
@@ -94,19 +111,19 @@ export function RegisterForm({ onNavigateToLogin }) {
             </div>
             <div>
               <DatePicker
-                name="dob"
+                name="dateOfBirth"
                 placeholder="Date of Birth"
                 style={{ width: '100%' }}
                 size="large"
-                value={values.dob}
-                onChange={date => setFieldValue("dob", date)}
+                value={values.dateOfBirth}
+                onChange={date => setFieldValue("dateOfBirth", date)}
                 format="YYYY-MM-DD"
               />
               <div className="text-left mt-1 pl-1">
-                <ErrorMessage name="dob" component="div" className="text-red-500 text-sm" />
+                <ErrorMessage name="dateOfBirth" component="div" className="text-red-500 text-sm" />
               </div>
             </div>
-            {/* <div>
+            <div>
               <Input
                 name="username"
                 placeholder="User Name"
@@ -118,7 +135,7 @@ export function RegisterForm({ onNavigateToLogin }) {
               <div className="text-left mt-1 pl-1">
                 <ErrorMessage name="username" component="div" className="text-red-500 text-sm" />
               </div>
-            </div> */}
+            </div>
             <div>
               <Input.Password
                 name="password"
