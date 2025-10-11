@@ -7,6 +7,7 @@ import { RegisterForm } from './components/RegisterForm'
 import Welcome from './app/pages/Welcome'
 import PublicRoute from './components/PublicRoute'
 import ProtectedRoute from './components/ProtectedRoute'
+import ConfirmEmail from './app/pages/ConfirmEmail'
 
 function App() {
 
@@ -28,6 +29,14 @@ function App() {
           element={
             <AuthCard>
               <RegisterForm />
+            </AuthCard>
+          }
+        />
+        <Route
+          path="/confirm-email"
+          element={
+            <AuthCard>
+              <ConfirmEmail />
             </AuthCard>
           }
         />
