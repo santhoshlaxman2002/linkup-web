@@ -5,10 +5,12 @@ import { Input, Button, DatePicker, ConfigProvider, Alert } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../features/auth/authThunks";
 import { useGradientButtonStyle } from "../styles/gradientButton";
-import { GoogleOutlined, GithubOutlined } from "@ant-design/icons";
+import { GoogleOutlined, GithubOutlined, CheckCircleTwoTone } from "@ant-design/icons";
 import { IoMailOutline } from "react-icons/io5";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
+import { generateUsername } from "../api/auth";
+import { UsernameField } from "./UsernameField";
 
 const initialValues = {
   firstName: "",
@@ -25,17 +27,20 @@ const validationSchema = Yup.object({
   lastName: Yup.string().required("Last name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   dateOfBirth: Yup.date().nullable().required("Date of birth is required"),
-  username: Yup.string().required("User name is required"),
+  username: Yup.string().min(2, "At least 2 characters").required("User name is required"),
   password: Yup.string().min(8, "At least 8 characters").required("Password is required"),
   confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match").required("Confirm Password is required"),
 });
 
-export function RegisterForm({ onNavigateToLogin }) {
+export function RegisterForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error, successMessage } = useSelector((state) => state.auth);
   const { styles } = useGradientButtonStyle();
 
+  const [usernameGenerated, setUsernameGenerated] = useState(false);
+  const [isUsernameLocked, setIsUsernameLocked] = useState(false);
+  
   const handleSubmit = async (values) => {
     const payload = {
       firstName: values.firstName,
@@ -48,6 +53,23 @@ export function RegisterForm({ onNavigateToLogin }) {
     const result = await dispatch(registerUser(payload));
       if (result.meta.requestStatus === "fulfilled") {
       navigate("/welcome");
+    }
+  };
+
+  const handleGenerateUsername = async (values, setFieldValue) => {
+    const { firstName, lastName } = values;
+
+    if (firstName && lastName && !isUsernameLocked) {
+      try {
+        setUsernameGenerated(false);
+        const res = await generateUsername(firstName, lastName);
+        if (res.ResponseCode === 200) {
+          setFieldValue("username", res.Data.username);
+          setUsernameGenerated(true);
+        }
+      } catch (err) {
+        console.error("Error generating username:", err);
+      }
     }
   };
 
@@ -73,6 +95,7 @@ export function RegisterForm({ onNavigateToLogin }) {
                 placeholder="First Name"
                 value={values.firstName}
                 onChange={handleChange}
+                onBlur={() => handleGenerateUsername(values, setFieldValue)}
                 size="large"
                 className="w-full"
               />
@@ -87,6 +110,7 @@ export function RegisterForm({ onNavigateToLogin }) {
                 placeholder="Last Name"
                 value={values.lastName}
                 onChange={handleChange}
+                onBlur={() => handleGenerateUsername(values, setFieldValue)}
                 size="large"
                 className="w-full"
               />
@@ -123,19 +147,18 @@ export function RegisterForm({ onNavigateToLogin }) {
                 <ErrorMessage name="dateOfBirth" component="div" className="text-red-500 text-sm" />
               </div>
             </div>
-            <div>
-              <Input
-                name="username"
-                placeholder="User Name"
-                value={values.username}
-                onChange={handleChange}
-                autoComplete="username"
-                size="large"
-              />
-              <div className="text-left mt-1 pl-1">
-                <ErrorMessage name="username" component="div" className="text-red-500 text-sm" />
-              </div>
-            </div>
+            <UsernameField
+              values={values}
+              handleChange={handleChange}
+              setFieldValue={setFieldValue}
+              isUsernameLocked={isUsernameLocked}
+              setIsUsernameLocked={setIsUsernameLocked}
+            />
+            <ErrorMessage
+              name="username"
+              component="div"
+              className="text-red-500 text-sm mt-1 pl-1"
+            />
             <div>
               <Input.Password
                 name="password"
