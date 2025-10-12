@@ -51,8 +51,9 @@ export function RegisterForm() {
       password: values.password,
     };
     const result = await dispatch(registerUser(payload));
-      if (result.meta.requestStatus === "fulfilled") {
-      navigate("/welcome");
+    if (result.meta.requestStatus === "fulfilled") {
+      const email = result.payload?.Data?.email;
+      navigate("/confirm-email", { state: { email } });
     }
   };
 

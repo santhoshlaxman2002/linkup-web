@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginUser, registerUser } from "./authThunks";
+import { loginUser, registerUser, confirmEmail } from "./authThunks";
 
 const initialState = {
   user: null,
@@ -64,6 +64,20 @@ const authSlice = createSlice({
         } else {
           state.error = "Registration failed. Please try again.";
         }
+      })
+
+      // confirmEmail
+      .addCase(confirmEmail.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(confirmEmail.fulfilled, (state, action) => {
+        state.loading = false;
+        state.successMessage = "Email confirmed successfully";
+      })
+      .addCase(confirmEmail.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Invalid confirmation code";
       });
   },
 });

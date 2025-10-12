@@ -8,6 +8,7 @@ import Welcome from './app/pages/Welcome'
 import PublicRoute from './components/PublicRoute'
 import ProtectedRoute from './components/ProtectedRoute'
 import ConfirmEmail from './app/pages/ConfirmEmail'
+import ProtectedConfirmRoute from './components/ProtectedConfirmRoute'
 
 function App() {
 
@@ -32,6 +33,9 @@ function App() {
             </AuthCard>
           }
         />
+      </Route>
+      
+      <Route element={<ProtectedConfirmRoute />}>
         <Route
           path="/confirm-email"
           element={
