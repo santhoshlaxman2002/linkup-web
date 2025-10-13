@@ -1,13 +1,16 @@
 import './App.css'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import Home from './pages/Home'
-import { AuthCard } from './components/AuthCard'
-import { LoginForm } from './components/LoginForm'
-import { RegisterForm } from './components/RegisterForm'
+import { AuthCard } from './components/common/AuthCard'
+import { LoginForm } from './components/auth/LoginForm'
+import { RegisterForm } from './components/auth/RegisterForm'
 import Welcome from './app/pages/Welcome'
-import PublicRoute from './components/PublicRoute'
-import ProtectedRoute from './components/ProtectedRoute'
-import ConfirmEmail from './app/pages/ConfirmEmail'
+import PublicRoute from './components/routes/PublicRoute'
+import ProtectedRoute from './components/routes/ProtectedRoute'
+import ConfirmEmail from './components/auth/ConfirmEmail'
+import ProtectedConfirmRoute from './components/routes/ProtectedConfirmRoute'
+import ForgotPasswordReset from './components/auth/ForgotPasswordReset'
+import ForgotPasswordInitiate from './components/auth/ForgotPasswordInitiate'
+import ProtectedResetRoute from './components/routes/ProtectedResetRoute'
 
 function App() {
 
@@ -33,6 +36,17 @@ function App() {
           }
         />
         <Route
+          path="/forgot-password"
+          element={
+            <AuthCard>
+              <ForgotPasswordInitiate />
+            </AuthCard>
+          }
+        />
+      </Route>
+      
+      <Route element={<ProtectedConfirmRoute />}>
+        <Route
           path="/confirm-email"
           element={
             <AuthCard>
@@ -44,6 +58,17 @@ function App() {
 
       <Route element={<ProtectedRoute />}>
         <Route path="/welcome" element={<Welcome />} />
+      </Route>
+
+      <Route element={<ProtectedResetRoute />}>
+        <Route
+          path="/reset-password"
+          element={
+            <AuthCard>
+              <ForgotPasswordReset />
+            </AuthCard>
+          }
+        />
       </Route>
     </Routes>
   )

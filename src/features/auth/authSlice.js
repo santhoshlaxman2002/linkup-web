@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginUser, registerUser } from "./authThunks";
+import { loginUser, registerUser, confirmEmail, initiateForgotPasswordThunk, changePasswordThunk } from "./authThunks";
 
 const initialState = {
   user: null,
@@ -64,6 +64,47 @@ const authSlice = createSlice({
         } else {
           state.error = "Registration failed. Please try again.";
         }
+      })
+
+      // confirmEmail
+      .addCase(confirmEmail.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(confirmEmail.fulfilled, (state, action) => {
+        state.loading = false;
+        state.successMessage = "Email confirmed successfully";
+      })
+      .addCase(confirmEmail.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Invalid confirmation code";
+      })
+
+      // Forgot Password Initiate
+      .addCase(initiateForgotPasswordThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(initiateForgotPasswordThunk.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(initiateForgotPasswordThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to send OTP.";
+      })
+
+      // Change Password
+      .addCase(changePasswordThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(changePasswordThunk.fulfilled, (state) => {
+        state.loading = false;
+        state.successMessage = "Password changed successfully";
+      })
+      .addCase(changePasswordThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to change password.";
       });
   },
 });
