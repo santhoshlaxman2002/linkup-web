@@ -4,9 +4,9 @@ import { Input, Button, Checkbox, ConfigProvider, Alert, notification } from "an
 import { IoMailOutline } from "react-icons/io5";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { GoogleOutlined, GithubOutlined } from "@ant-design/icons";
-import { useGradientButtonStyle } from "../styles/gradientButton";
+import { useGradientButtonStyle } from "../../styles/gradientButton";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../features/auth/authThunks";
+import { loginUser } from "../../features/auth/authThunks";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Input, Dropdown, Menu } from "antd";
 import { CheckCircleTwoTone, CloseCircleTwoTone, LoadingOutlined } from "@ant-design/icons";
-import { validateUsername } from "../api/auth";
+import { validateUsername } from "../../api/auth";
 
 export function UsernameField({ values, handleChange, setFieldValue, isUsernameLocked, setIsUsernameLocked }) {
   const [isValidating, setIsValidating] = useState(false);

@@ -5,7 +5,7 @@ import { Input, Button, Alert } from "antd";
 import { IoArrowBackSharp, IoMailOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { initiateForgotPasswordThunk } from "../features/auth/authThunks";
+import { initiateForgotPasswordThunk } from "../../features/auth/authThunks";
 
 export default function ForgotPasswordInitiate() {
   const navigate = useNavigate();

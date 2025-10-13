@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { Input, Button, Alert } from "antd";
 import { IoLockClosedOutline, IoMailOutline, IoArrowBackSharp } from "react-icons/io5";
 import { useLocation, useNavigate } from "react-router-dom";
-import { changePasswordThunk } from "../features/auth/authThunks";
+import { changePasswordThunk } from "../../features/auth/authThunks";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function ForgotPasswordReset() {

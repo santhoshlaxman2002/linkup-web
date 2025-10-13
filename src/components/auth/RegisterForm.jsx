@@ -3,14 +3,14 @@ import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Input, Button, DatePicker, ConfigProvider, Alert } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../features/auth/authThunks";
-import { useGradientButtonStyle } from "../styles/gradientButton";
+import { registerUser } from "../../features/auth/authThunks";
+import { useGradientButtonStyle } from "../../styles/gradientButton";
 import { GoogleOutlined, GithubOutlined, CheckCircleTwoTone } from "@ant-design/icons";
 import { IoMailOutline } from "react-icons/io5";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
-import { generateUsername } from "../api/auth";
-import { UsernameField } from "./UsernameField";
+import { generateUsername } from "../../api/auth";
+import { UsernameField } from "../common/UsernameField";
 
 const initialValues = {
   firstName: "",

@@ -1,4 +1,4 @@
-import LinkUpLogoImage from "../assets/linkup-logo.jpg";
+import LinkUpLogoImage from "../../assets/linkup-logo.jpg";
 
 export function AuthCard({ children }) {
   return (
