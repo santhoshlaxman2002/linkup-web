@@ -1,14 +1,14 @@
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Input, Button, Checkbox, ConfigProvider, Alert } from "antd";
+import { Input, Button, Checkbox, ConfigProvider, Alert, notification } from "antd";
 import { IoMailOutline } from "react-icons/io5";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { GoogleOutlined, GithubOutlined } from "@ant-design/icons";
 import { useGradientButtonStyle } from "../styles/gradientButton";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../features/auth/authThunks";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const initialValues = {
   loginName: "",
@@ -38,6 +38,36 @@ export function LoginForm() {
   const navigate = useNavigate();
   const { loading, error, successMessage } = useSelector((state) => state.auth);
   const { styles } = useGradientButtonStyle();
+  const location = useLocation();
+  const shownPasswordChanged = useRef(false);
+  const shownError = useRef(false);
+
+  useEffect(() => {
+    const passwordChanged = !!location.state?.passwordChanged;
+    if (passwordChanged && !shownPasswordChanged.current) {
+      shownPasswordChanged.current = true;
+
+      notification.success({
+        message: "Password Changed Successfully",
+        description: "You can now log in with your new password.",
+        duration: 3,
+      });
+
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state?.passwordChanged, navigate, location.pathname]);
+
+  useEffect(() => {
+    if (error && !shownError.current) {
+      shownError.current = true;
+      notification.error({
+        message: "Login Failed",
+        description: error,
+        duration: 3,
+      });
+    }
+  }, [error]);
+
 
   const handleSubmit = async (values) => {
     const result = await dispatch(loginUser(values));
@@ -102,9 +132,9 @@ export function LoginForm() {
               >
                 Remember me
               </Checkbox>
-              <a href="#" className="text-sm text-indigo-600 hover:text-indigo-400">
+              <Link to="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-400">
                 Forgot password?
-              </a>
+              </Link>
             </div>
             <ConfigProvider button={{ className: styles.gradientButton }}>
               <Button

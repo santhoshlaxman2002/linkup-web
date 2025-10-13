@@ -9,6 +9,9 @@ import PublicRoute from './components/PublicRoute'
 import ProtectedRoute from './components/ProtectedRoute'
 import ConfirmEmail from './app/pages/ConfirmEmail'
 import ProtectedConfirmRoute from './components/ProtectedConfirmRoute'
+import ForgotPasswordReset from './components/ForgotPasswordReset'
+import ForgotPasswordInitiate from './components/ForgotPasswordInitiate'
+import ProtectedResetRoute from './components/ProtectedResetRoute'
 
 function App() {
 
@@ -33,6 +36,14 @@ function App() {
             </AuthCard>
           }
         />
+        <Route
+          path="/forgot-password"
+          element={
+            <AuthCard>
+              <ForgotPasswordInitiate />
+            </AuthCard>
+          }
+        />
       </Route>
       
       <Route element={<ProtectedConfirmRoute />}>
@@ -48,6 +59,17 @@ function App() {
 
       <Route element={<ProtectedRoute />}>
         <Route path="/welcome" element={<Welcome />} />
+      </Route>
+
+      <Route element={<ProtectedResetRoute />}>
+        <Route
+          path="/reset-password"
+          element={
+            <AuthCard>
+              <ForgotPasswordReset />
+            </AuthCard>
+          }
+        />
       </Route>
     </Routes>
   )

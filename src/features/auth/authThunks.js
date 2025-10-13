@@ -58,3 +58,39 @@ export const confirmEmail = createAsyncThunk(
     }
   }
 );
+
+// Initiate Forgot Password
+export const initiateForgotPasswordThunk = createAsyncThunk(
+  "auth/initiateForgotPassword",
+  async (email, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.post("/auth/initiate-forgot-password", {
+        loginName: email,
+      });
+      if (res.data.ResponseCode === 200) {
+        return res.data;
+      } else {
+        return rejectWithValue(res.data.ResponseMessage);
+      }
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+// Change Password
+export const changePasswordThunk = createAsyncThunk(
+  "auth/changePassword",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.post("/auth/change-password", payload);
+      if (res.data.ResponseCode === 200) {
+        return res.data;
+      } else {
+        return rejectWithValue(res.data.ResponseMessage);
+      }
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
