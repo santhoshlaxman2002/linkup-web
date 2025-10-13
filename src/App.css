@@ -40,3 +40,28 @@
 .read-the-docs {
   color: #888;
 }
+
+@keyframes aurora {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.bg-aurora {
+  background: linear-gradient(
+    -45deg,
+    #a78bfa,
+    #1cf8e9,
+    #fef3c7,
+    #93c5fd,
+    #b3a0ff
+  );
+  background-size: 400% 400%;
+  animation: aurora 12s ease infinite;
+}
