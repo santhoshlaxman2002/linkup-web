@@ -6,20 +6,14 @@ import { IoArrowBackSharp, IoMailOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { initiateForgotPasswordThunk } from "../../features/auth/authThunks";
+import { forgotPasswordSchema } from "../../validations/authValidation";
 
 export default function ForgotPasswordInitiate() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
 
-
   const initialValues = { email: "" };
-
-  const validationSchema = Yup.object({
-    email: Yup.string()
-      .email("Enter a valid email")
-      .required("Email is required"),
-  });
 
   const handleSubmit = async (values) => {
     const result = await dispatch(initiateForgotPasswordThunk(values.email));
@@ -48,7 +42,7 @@ export default function ForgotPasswordInitiate() {
 
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        validationSchema={forgotPasswordSchema}
         onSubmit={handleSubmit}
       >
         {({ values, handleChange }) => (
