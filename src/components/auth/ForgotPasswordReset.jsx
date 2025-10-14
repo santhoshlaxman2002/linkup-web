@@ -15,7 +15,7 @@ export default function ForgotPasswordReset() {
   const { loading, error } = useSelector((state) => state.auth);
 
 
-  const initialValues = { otp: "", newPassword: "" };
+  const initialValues = { otp: "", newPassword: "" , confirmPassword: "" };
 
   const validationSchema = Yup.object({
     otp: Yup.string()
@@ -24,6 +24,9 @@ export default function ForgotPasswordReset() {
     newPassword: Yup.string()
       .min(8, "Password must be at least 8 characters")
       .required("New password is required"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
+      .required("Confirm password is required"),
   });
 
   const handleSubmit = async (values) => {
@@ -102,6 +105,18 @@ export default function ForgotPasswordReset() {
             />
             <div className="text-left mt-1 pl-1">
               <ErrorMessage name="newPassword" component="div" className="text-red-500 text-sm" />
+            </div>
+
+            <Input.Password
+              name="confirmPassword"
+              placeholder="Confirm new password"
+              value={values.confirmPassword}
+              onChange={handleChange}
+              size="large"
+              prefix={<IoLockClosedOutline size={20} />}
+            />
+            <div className="text-left mt-1 pl-1">
+              <ErrorMessage name="confirmPassword" component="div" className="text-red-500 text-sm" />
             </div>
 
             <Button
