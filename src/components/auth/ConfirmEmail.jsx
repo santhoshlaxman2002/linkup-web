@@ -6,6 +6,8 @@ import { Input, Button, Alert } from "antd";
 import { IoMailOutline, IoArrowBackSharp } from "react-icons/io5";
 import { useNavigate, useLocation } from "react-router-dom";
 import { confirmEmail } from "../../features/auth/authThunks";
+import { maskEmail } from "../../utils/helpers";
+import { confirmEmailSchema } from "../../validations/authValidation";
 
 export default function ConfirmEmail() {
   const navigate = useNavigate();
@@ -14,30 +16,13 @@ export default function ConfirmEmail() {
 
   const { loading, error } = useSelector((state) => state.auth);
   const email = location.state?.email || "your-email@example.com";
-
   const initialValues = { code: "" };
-
-  const validationSchema = Yup.object({
-    code: Yup.string()
-      .required("Confirmation code is required")
-      .matches(/^[0-9]{6}$/, "Enter a valid 6-digit code"),
-  });
 
   const handleSubmit = async (values) => {
     const result = await dispatch(confirmEmail({ email, otp: values.code }));
     if (result.meta.requestStatus === "fulfilled") {
       navigate("/welcome");
     }
-  };
-
-  const maskEmail = (email) => {
-    if (!email) return "";
-    const [user, domain] = email.split("@");
-    const maskedUser =
-      user.length > 2
-        ? user[0] + "*".repeat(user.length - 2) + user[user.length - 1]
-        : user[0] + "*";
-    return `${maskedUser}@${domain}`;
   };
 
   return (
@@ -61,7 +46,7 @@ export default function ConfirmEmail() {
 
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        validationSchema={confirmEmailSchema}
         onSubmit={handleSubmit}
       >
         {({ values, handleChange }) => (

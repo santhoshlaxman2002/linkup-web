@@ -6,6 +6,8 @@ import { IoLockClosedOutline, IoMailOutline, IoArrowBackSharp } from "react-icon
 import { useLocation, useNavigate } from "react-router-dom";
 import { changePasswordThunk } from "../../features/auth/authThunks";
 import { useDispatch, useSelector } from "react-redux";
+import { maskEmail } from "../../utils/helpers";
+import { resetPasswordSchema } from "../../validations/authValidation";
 
 export default function ForgotPasswordReset() {
   const navigate = useNavigate();
@@ -14,17 +16,7 @@ export default function ForgotPasswordReset() {
   const email = location.state?.email || "";
   const { loading, error } = useSelector((state) => state.auth);
 
-
-  const initialValues = { otp: "", newPassword: "" };
-
-  const validationSchema = Yup.object({
-    otp: Yup.string()
-      .required("OTP is required")
-      .matches(/^[0-9]{6}$/, "Enter a valid 6-digit OTP"),
-    newPassword: Yup.string()
-      .min(8, "Password must be at least 8 characters")
-      .required("New password is required"),
-  });
+  const initialValues = { otp: "", newPassword: "" , confirmPassword: "" };
 
   const handleSubmit = async (values) => {
     const payload = {
@@ -39,16 +31,6 @@ export default function ForgotPasswordReset() {
       localStorage.removeItem("resetSession");
       navigate("/login", { replace: true, state: { passwordChanged: true } });
     }
-  };
-
-  const maskEmail = (email) => {
-    if (!email) return "";
-    const [user, domain] = email.split("@");
-    const maskedUser =
-      user.length > 2
-        ? user[0] + "*".repeat(user.length - 2) + user[user.length - 1]
-        : user[0] + "*";
-    return `${maskedUser}@${domain}`;
   };
 
   return (
@@ -70,7 +52,7 @@ export default function ForgotPasswordReset() {
 
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        validationSchema={resetPasswordSchema}
         onSubmit={handleSubmit}
       >
         {({ values, handleChange }) => (
@@ -102,6 +84,18 @@ export default function ForgotPasswordReset() {
             />
             <div className="text-left mt-1 pl-1">
               <ErrorMessage name="newPassword" component="div" className="text-red-500 text-sm" />
+            </div>
+
+            <Input.Password
+              name="confirmPassword"
+              placeholder="Confirm new password"
+              value={values.confirmPassword}
+              onChange={handleChange}
+              size="large"
+              prefix={<IoLockClosedOutline size={20} />}
+            />
+            <div className="text-left mt-1 pl-1">
+              <ErrorMessage name="confirmPassword" component="div" className="text-red-500 text-sm" />
             </div>
 
             <Button

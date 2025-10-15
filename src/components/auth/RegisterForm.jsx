@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Formik, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import { Input, Button, DatePicker, ConfigProvider, Alert } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../../features/auth/authThunks";
@@ -11,6 +10,7 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
 import { generateUsername } from "../../api/auth";
 import { UsernameField } from "../common/UsernameField";
+import { registerSchema } from "../../validations/authValidation";
 
 const initialValues = {
   firstName: "",
@@ -21,16 +21,6 @@ const initialValues = {
   password: "",
   confirmPassword: "",
 };
-
-const validationSchema = Yup.object({
-  firstName: Yup.string().required("First name is required"),
-  lastName: Yup.string().required("Last name is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  dateOfBirth: Yup.date().nullable().required("Date of birth is required"),
-  username: Yup.string().min(2, "At least 2 characters").required("User name is required"),
-  password: Yup.string().min(8, "At least 8 characters").required("Password is required"),
-  confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match").required("Confirm Password is required"),
-});
 
 export function RegisterForm() {
   const dispatch = useDispatch();
@@ -78,7 +68,7 @@ export function RegisterForm() {
     <>
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        validationSchema={registerSchema}
         onSubmit={handleSubmit}
       >
         {({ values, handleChange, handleSubmit, setFieldValue }) => (
@@ -148,18 +138,18 @@ export function RegisterForm() {
                 <ErrorMessage name="dateOfBirth" component="div" className="text-red-500 text-sm" />
               </div>
             </div>
-            <UsernameField
-              values={values}
-              handleChange={handleChange}
-              setFieldValue={setFieldValue}
-              isUsernameLocked={isUsernameLocked}
-              setIsUsernameLocked={setIsUsernameLocked}
-            />
-            <ErrorMessage
-              name="username"
-              component="div"
-              className="text-red-500 text-sm mt-1 pl-1"
-            />
+            <div>
+              <UsernameField
+                values={values}
+                handleChange={handleChange}
+                setFieldValue={setFieldValue}
+                isUsernameLocked={isUsernameLocked}
+                setIsUsernameLocked={setIsUsernameLocked}
+              />
+              <div className="text-left mt-1 pl-1">
+                <ErrorMessage name="username" component="div" className="text-red-500 text-sm" />
+              </div>
+            </div>
             <div>
               <Input.Password
                 name="password"

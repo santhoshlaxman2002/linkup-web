@@ -1,5 +1,4 @@
 import { Formik, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import { Input, Button, Checkbox, ConfigProvider, Alert, notification } from "antd";
 import { IoMailOutline } from "react-icons/io5";
 import { RiLockPasswordLine } from "react-icons/ri";
@@ -9,29 +8,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../features/auth/authThunks";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { loginSchema } from "../../validations/authValidation";
 
 const initialValues = {
   loginName: "",
   password: "",
   rememberMe: false,
 };
-
-const validationSchema = Yup.object({
-  loginName: Yup.string()
-  .test(
-    "is-valid-login",
-    "Enter a valid email or username",
-    (value) => {
-      if (!value) return false;
-      // allow if email OR username (letters/numbers/._-)
-      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-      const isUsername = /^[a-zA-Z0-9._-]+$/.test(value);
-      return isEmail || isUsername;
-    }
-  )
-  .required("User name or email is required"),
-  password: Yup.string().min(8, "At least 8 characters").required("Password is required"),
-});
 
 export function LoginForm() {
   const dispatch = useDispatch();
@@ -80,7 +63,7 @@ export function LoginForm() {
     <>
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        validationSchema={loginSchema}
         onSubmit={handleSubmit}
       >
         {({ values, handleChange, handleSubmit, setFieldValue }) => (
