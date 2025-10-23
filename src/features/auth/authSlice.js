@@ -1,5 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginUser, registerUser, confirmEmail, initiateForgotPasswordThunk, changePasswordThunk } from "./authThunks";
+import {
+  loginUser,
+  registerUser,
+  confirmEmail,
+  initiateForgotPasswordThunk,
+  changePasswordThunk,
+  updateProfileThunk,
+  getUserProfileThunk,
+} from "./authThunks";
 
 const initialState = {
   user: null,
@@ -105,6 +113,34 @@ const authSlice = createSlice({
       .addCase(changePasswordThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to change password.";
+      })
+
+      // Update Profile
+      .addCase(updateProfileThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateProfileThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload; // store updated user
+        state.successMessage = "Profile updated successfully!";
+      })
+      .addCase(updateProfileThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Profile update failed";
+      })
+
+      // Handle user profile fetch
+      .addCase(getUserProfileThunk.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getUserProfileThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(getUserProfileThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
