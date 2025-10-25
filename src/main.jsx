@@ -6,6 +6,7 @@ import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux';
 import { store } from "./app/store";
+import "react-phone-input-2/lib/style.css";
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>

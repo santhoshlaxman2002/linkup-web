@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -8,6 +8,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { confirmEmail } from "../../features/auth/authThunks";
 import { maskEmail } from "../../utils/helpers";
 import { confirmEmailSchema } from "../../validations/authValidation";
+import ProfileSetupModal from "../profile/ProfileSetupModal";
 
 export default function ConfirmEmail() {
   const navigate = useNavigate();
@@ -17,11 +18,12 @@ export default function ConfirmEmail() {
   const { loading, error } = useSelector((state) => state.auth);
   const email = location.state?.email || "your-email@example.com";
   const initialValues = { code: "" };
+  const [showProfileSetup, setShowProfileSetup] = useState(false);
 
   const handleSubmit = async (values) => {
     const result = await dispatch(confirmEmail({ email, otp: values.code }));
     if (result.meta.requestStatus === "fulfilled") {
-      navigate("/welcome");
+      setShowProfileSetup(true);
     }
   };
 
@@ -89,6 +91,13 @@ export default function ConfirmEmail() {
           </Form>
         )}
       </Formik>
+      {showProfileSetup && (
+        <ProfileSetupModal
+          open={showProfileSetup}
+          onClose={() => navigate("/welcome")}
+          onSave={() => navigate("/welcome")}
+        />
+      )}
     </div>
   );
 }

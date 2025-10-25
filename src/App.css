@@ -65,3 +65,18 @@
   background-size: 400% 400%;
   animation: aurora 12s ease infinite;
 }
+
+.custom-sky-select .ant-select-selector {
+  border-radius: 8px !important;
+  border: 1px solid rgb(125 211 252) !important; /* sky-300 */
+  transition: all 0.2s ease;
+}
+
+.custom-sky-select:hover .ant-select-selector {
+  border-color: rgb(56 189 248) !important; /* sky-400 */
+}
+
+.custom-sky-select.ant-select-focused .ant-select-selector {
+  box-shadow: 0 0 0 2px rgba(125, 211, 252, 0.4) !important; /* glow ring */
+  border-color: rgb(56 189 248) !important;
+}
