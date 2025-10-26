@@ -55,7 +55,7 @@ export function LoginForm() {
   const handleSubmit = async (values) => {
     const result = await dispatch(loginUser(values));
     if (result.meta.requestStatus === "fulfilled") {
-      navigate("/welcome");
+      navigate("/home");
     }
   };
 

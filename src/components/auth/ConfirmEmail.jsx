@@ -94,8 +94,8 @@ export default function ConfirmEmail() {
       {showProfileSetup && (
         <ProfileSetupModal
           open={showProfileSetup}
-          onClose={() => navigate("/welcome")}
-          onSave={() => navigate("/welcome")}
+          onClose={() => navigate("/home")}
+          onSave={() => navigate("/home")}
         />
       )}
     </div>

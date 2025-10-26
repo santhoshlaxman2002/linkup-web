@@ -1,6 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../utils/axiosInstance";
-import { fetchUserProfile } from "../../api/profileHelper";
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
@@ -92,41 +91,6 @@ export const changePasswordThunk = createAsyncThunk(
       }
     } catch (err) {
       return rejectWithValue(err.message);
-    }
-  }
-);
-
-export const updateProfileThunk = createAsyncThunk(
-  "auth/updateProfile",
-  async (profileData, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.put("/profiles", profileData);
-      const data = res.data;
-
-      if (data.ResponseCode !== 200) {
-        return rejectWithValue(data.ResponseMessage);
-      }
-
-      return data.Data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.ResponseMessage || "Something went wrong"
-      );
-    }
-  }
-);
-
-export const getUserProfileThunk = createAsyncThunk(
-  "auth/getUserProfile",
-  async (_, { rejectWithValue }) => {
-    try {
-      const res = await fetchUserProfile();
-      if (res.ResponseCode !== 200) {
-        return rejectWithValue(res.ResponseMessage);
-      }
-      return res.Data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.ResponseMessage || "Failed to fetch profile");
     }
   }
 );
