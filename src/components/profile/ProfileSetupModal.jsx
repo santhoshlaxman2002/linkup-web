@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { uploadMedia } from "../../api/media";
 import { useDispatch } from "react-redux";
-import { updateProfileThunk } from "../../features/auth/authThunks";
+import { updateProfileThunk } from "../../features/profile/profileThunks";
 import ImgCrop from 'antd-img-crop';
 import PhoneInput from "react-phone-input-2";
 

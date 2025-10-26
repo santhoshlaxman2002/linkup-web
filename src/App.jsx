@@ -3,7 +3,11 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { AuthCard } from './components/common/AuthCard'
 import { LoginForm } from './components/auth/LoginForm'
 import { RegisterForm } from './components/auth/RegisterForm'
-import Welcome from './app/pages/Welcome'
+import Home from './app/pages/Home'
+import Messages from './app/pages/Messages'
+import Notifications from './app/pages/Notifications'
+import Profile from './app/pages/Profile'
+import Search from './app/pages/Search'
 import PublicRoute from './components/routes/PublicRoute'
 import ProtectedRoute from './components/routes/ProtectedRoute'
 import ConfirmEmail from './components/auth/ConfirmEmail'
@@ -57,7 +61,12 @@ function App() {
       </Route>
 
       <Route element={<ProtectedRoute />}>
-        <Route path="/welcome" element={<Welcome />} />
+        <Route path="/" element={<Navigate to="/home" replace />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/messages" element={<Messages />} />
+        <Route path="/notifications" element={<Notifications />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/search" element={<Search />} />
       </Route>
 
       <Route element={<ProtectedResetRoute />}>

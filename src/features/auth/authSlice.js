@@ -5,8 +5,6 @@ import {
   confirmEmail,
   initiateForgotPasswordThunk,
   changePasswordThunk,
-  updateProfileThunk,
-  getUserProfileThunk,
 } from "./authThunks";
 
 const initialState = {
@@ -79,7 +77,7 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(confirmEmail.fulfilled, (state, action) => {
+      .addCase(confirmEmail.fulfilled, (state) => {
         state.loading = false;
         state.successMessage = "Email confirmed successfully";
       })
@@ -114,34 +112,6 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload || "Failed to change password.";
       })
-
-      // Update Profile
-      .addCase(updateProfileThunk.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateProfileThunk.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload; // store updated user
-        state.successMessage = "Profile updated successfully!";
-      })
-      .addCase(updateProfileThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Profile update failed";
-      })
-
-      // Handle user profile fetch
-      .addCase(getUserProfileThunk.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(getUserProfileThunk.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload;
-      })
-      .addCase(getUserProfileThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
   },
 });
 
