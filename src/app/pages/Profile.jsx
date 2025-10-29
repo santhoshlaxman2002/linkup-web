@@ -1,14 +1,16 @@
 // src/components/Profile/ProfileSection.jsx
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProfileThunk } from "../../features/profile/profileThunks";
 import { Button, Avatar, Skeleton, message } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import LayoutWrapper from "../../components/layout/LayoutWrapper";
+import ProfileSetupModal from "../../components/profile/ProfileSetupModal";
 
 const ProfileSection = () => {
   const dispatch = useDispatch();
   const { user, loading, error } = useSelector((state) => state.profile);
+  const [showProfileSetup, setShowProfileSetup] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -80,6 +82,7 @@ const ProfileSection = () => {
             <Button
               icon={<EditOutlined />}
               shape="round"
+              onClick={() => setShowProfileSetup(true)}
               className="!bg-white !border-gray-300 hover:!bg-blue-50 hover:!border-blue-400 hover:!text-blue-600 !text-gray-700 transition-all !text-sm sm:!text-base"
             >
               Edit Profile
@@ -107,6 +110,19 @@ const ProfileSection = () => {
           )}
         </div>
       </div>
+
+      {/* ===== Modal for editing profile ===== */}
+      {showProfileSetup && (
+        <ProfileSetupModal
+          open={showProfileSetup}
+          user={user}
+          onClose={() => setShowProfileSetup(false)}
+          onSave={() => {
+            setShowProfileSetup(false);
+            dispatch(getUserProfileThunk());
+          }}
+        />
+      )}
     </LayoutWrapper>
   );
 };
