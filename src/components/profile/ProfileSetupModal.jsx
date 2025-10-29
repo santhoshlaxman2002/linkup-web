@@ -1,29 +1,29 @@
-import React, { useState } from "react";
-import { Modal, Upload, Select, Input, Button, Typography, message } from "antd";
-import { PlusOutlined, LoadingOutlined, UploadOutlined } from "@ant-design/icons";
-import { useFormik } from "formik";
+import React, { useState, useEffect } from "react";
+import {
+  Modal,
+  Upload,
+  Select,
+  Input,
+  Button,
+  Typography,
+  message,
+  DatePicker,
+} from "antd";
+import {
+  PlusOutlined,
+  LoadingOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
+import { ErrorMessage, useFormik } from "formik";
 import * as Yup from "yup";
 import { uploadMedia } from "../../api/media";
 import { useDispatch } from "react-redux";
 import { updateProfileThunk } from "../../features/profile/profileThunks";
-import ImgCrop from 'antd-img-crop';
+import ImgCrop from "antd-img-crop";
 import PhoneInput from "react-phone-input-2";
+import dayjs from "dayjs";
 
 const { Title, Text } = Typography;
-
-const validationSchema = Yup.object({
-  mobileNo: Yup.string()
-    .matches(/^\+?[1-9]\d{7,14}$/, "Enter a valid phone number"),
-});
-
-
-const initialValues = {
-  profileImage: null,
-  coverImage: null,
-  bio: "",
-  gender: null,
-  mobileNo: "",
-};
 
 const getBase64 = (file, callback) => {
   const reader = new FileReader();
@@ -39,46 +39,86 @@ const beforeUpload = (file) => {
   return isJpgOrPng && isLt2M;
 };
 
-export default function ProfileSetupModal({ open, onClose, onSave }) {
+export default function ProfileSetupModal({
+  open,
+  onClose,
+  onSave,
+  user = null,
+}) {
   const dispatch = useDispatch();
+
   const [profilePreview, setProfilePreview] = useState(null);
   const [coverPreview, setCoverPreview] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [loadingCover, setLoadingCover] = useState(false);
 
+  const isEditMode = Boolean(user);
+
+  const validationSchema = Yup.object({
+    mobileNo: Yup.string().matches(
+      /^\+?[1-9]\d{7,14}$/,
+      "Enter a valid phone number"
+    ),
+    firstName: isEditMode
+      ? Yup.string().trim().required("First name is required")
+      : Yup.string().trim(),
+    lastName: isEditMode
+      ? Yup.string().trim().required("Last name is required")
+      : Yup.string().trim(),
+    dateOfBirth: isEditMode
+      ? Yup.date()
+          .nullable()
+          .max(new Date(), "Date of birth cannot be in the future")
+          .required("Date of birth is required")
+      : Yup.date().nullable().max(new Date(), "Date of birth cannot be in the future"),
+  });
+
   const formik = useFormik({
-    initialValues,
+    initialValues: {
+      firstName: user?.first_name || "",
+      lastName: user?.last_name || "",
+      dateOfBirth: user?.date_of_birth || null,
+      profileImage: user?.profile_image_url || null,
+      coverImage: user?.cover_image || null,
+      bio: user?.bio || "",
+      gender: user?.gender
+        ? user.gender.charAt(0).toUpperCase() + user.gender.slice(1).toLowerCase()
+        : null,
+      mobileNo: user?.mobile_number || "",
+    },
+    enableReinitialize: true,
     validationSchema,
     onSubmit: async (values) => {
       try {
         let profileUrl = values.profileImage;
         let coverUrl = values.coverImage;
 
+        // if local files selected, upload to backend
         if (profileUrl && profileUrl instanceof File) {
           const res = await uploadMedia(profileUrl);
           profileUrl = res.Data;
         }
-
         if (coverUrl && coverUrl instanceof File) {
           const res = await uploadMedia(coverUrl);
           coverUrl = res.Data;
         }
 
         const payload = {
+          first_name: values.firstName || user?.first_name,
+          last_name: values.lastName || user?.last_name,
+          date_of_birth: values.dateOfBirth || user?.date_of_birth,
           bio: values.bio || "",
           gender: values.gender ? values.gender.toLowerCase() : null,
           mobile_number: values.mobileNo || null,
           profile_image_url: profileUrl || null,
           cover_image: coverUrl || null,
         };
-        console.log(payload);
-        
 
         const resultAction = await dispatch(updateProfileThunk(payload));
-        
+
         if (updateProfileThunk.fulfilled.match(resultAction)) {
           message.success("Profile updated successfully!");
-          onSave(resultAction.payload); // optional callback
+          onSave?.(resultAction.payload);
         } else {
           message.error(resultAction.payload || "Profile update failed");
         }
@@ -88,6 +128,14 @@ export default function ProfileSetupModal({ open, onClose, onSave }) {
     },
   });
 
+  // preload previews if user data exists
+  useEffect(() => {
+    if (user) {
+      setProfilePreview(user.profile_image_url || null);
+      setCoverPreview(user.cover_image || null);
+    }
+  }, [user]);
+
   const handleUpload = async (info, setPreview, key, setLoading) => {
     if (!info.file) return;
 
@@ -95,6 +143,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }) {
       setLoading(true);
       return;
     }
+
     if (info.file.originFileObj) {
       try {
         setLoading(true);
@@ -102,12 +151,12 @@ export default function ProfileSetupModal({ open, onClose, onSave }) {
 
         if (uploadRes.ResponseCode === 200) {
           const fileUrl = uploadRes.Data;
-          setPreview(fileUrl); // Preview image directly from backend URL
-          formik.setFieldValue(key, fileUrl); // Save URL in formik state
+          setPreview(fileUrl);
+          formik.setFieldValue(key, fileUrl);
         } else {
           message.error(uploadRes.ResponseMessage || "Upload failed");
         }
-      } catch (err) {
+      } catch {
         message.error("Error uploading image!");
       } finally {
         setLoading(false);
@@ -119,21 +168,25 @@ export default function ProfileSetupModal({ open, onClose, onSave }) {
     <Modal
       open={open}
       footer={null}
+      maskClosable={isEditMode}
+      onCancel={isEditMode ? onClose : undefined}
       closable={false}
       centered
       width={580}
       className="backdrop-blur-sm"
       style={{ borderRadius: 18, padding: 20 }}
     >
-      {/* Header */}
-      <div className="text-center mb-5">
-        <Title level={3} className="!text-gray-800 mb-1">
-          Welcome to <span className="text-sky-500">LinkUp</span>
-        </Title>
-        <Text type="secondary">
-          Let’s complete your profile to help others know you better
-        </Text>
-      </div>
+      {/* Header — hide when editing */}
+      {!isEditMode && (
+        <div className="text-center mb-5">
+          <Title level={3} className="!text-gray-800 mb-1">
+            Welcome to <span className="text-sky-500">LinkUp</span>
+          </Title>
+          <Text type="secondary">
+            Let’s complete your profile to help others know you better
+          </Text>
+        </div>
+      )}
 
       <form onSubmit={formik.handleSubmit} className="space-y-4">
         {/* Profile Image */}
@@ -198,6 +251,64 @@ export default function ProfileSetupModal({ open, onClose, onSave }) {
           </Upload>
         </div>
 
+        {/* Show name and DOB fields only in edit mode */}
+        {isEditMode && (
+          <>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="font-semibold">First Name</label>
+                <Input
+                  name="firstName"
+                  value={formik.values.firstName}
+                  onChange={formik.handleChange}
+                  placeholder="Enter first name"
+                />
+                {formik.touched.firstName && formik.errors.firstName && (
+                  <div className="text-red-500 text-sm mt-1 pl-1">
+                    {formik.errors.firstName}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="font-semibold">Last Name</label>
+                <Input
+                  name="lastName"
+                  value={formik.values.lastName}
+                  onChange={formik.handleChange}
+                  placeholder="Enter last name"
+                />
+                {formik.touched.lastName && formik.errors.lastName && (
+                  <div className="text-red-500 text-sm mt-1 pl-1">
+                    {formik.errors.lastName}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Date of Birth field */}
+            <div>
+              <label className="font-semibold">Date of Birth</label>
+              <DatePicker
+                name="dateOfBirth"
+                placeholder="Date of Birth"
+                style={{ width: "100%" }}
+                size="large"
+                value={formik.values.dateOfBirth ? dayjs(formik.values.dateOfBirth) : null}
+                onChange={(date) =>
+                  formik.setFieldValue("dateOfBirth", date ? date.format("YYYY-MM-DD") : "")
+                }
+                format="YYYY-MM-DD"
+              />
+              {formik.touched.dateOfBirth && formik.errors.dateOfBirth && (
+                <div className="text-red-500 text-sm mt-1 pl-1">
+                  {formik.errors.dateOfBirth}
+                </div>
+              )}
+            </div>
+          </>
+        )}
+
         {/* Bio */}
         <div>
           <label className="font-semibold">Bio</label>
@@ -233,50 +344,46 @@ export default function ProfileSetupModal({ open, onClose, onSave }) {
 
           <div>
             <label className="font-semibold">Mobile No</label>
-            <div>
-              <PhoneInput
-                country={"in"} 
-                enableSearch={true}
-                value={formik.values.mobileNo}
-                onChange={(value) => formik.setFieldValue("mobileNo", `+${value}`)}
-                onBlur={() => formik.setFieldTouched("mobileNo", true)}
-                inputStyle={{
-                  width: "100%",
-                  borderRadius: "8px",
-                  border: "1px solid slate-300",
-                  height: "33px",
-                  fontSize: "14px",
-                  paddingLeft: "48px",
-                  color: "#1e293b",
-                }}
-                buttonStyle={{
-                  border: "1px solid slate-300",
-                  borderRadius: "4px 0 0 4px",
-                }}
-                dropdownStyle={{
-                  borderRadius: "8px",
-                }}
-              />
-            </div>
-
+            <PhoneInput
+              country={"in"}
+              enableSearch={true}
+              value={formik.values.mobileNo}
+              onChange={(value) => formik.setFieldValue("mobileNo", `+${value}`)}
+              onBlur={() => formik.setFieldTouched("mobileNo", true)}
+              inputStyle={{
+                width: "100%",
+                borderRadius: "8px",
+                border: "1px solid slate-300",
+                height: "33px",
+                fontSize: "14px",
+                paddingLeft: "48px",
+                color: "#1e293b",
+              }}
+              buttonStyle={{
+                border: "1px solid slate-300",
+                borderRadius: "4px 0 0 4px",
+              }}
+              dropdownStyle={{
+                borderRadius: "8px",
+              }}
+            />
             {formik.touched.mobileNo && formik.errors.mobileNo && (
               <div className="text-red-500 text-sm mt-1">
                 {formik.errors.mobileNo}
               </div>
             )}
           </div>
-
         </div>
 
         {/* Buttons */}
         <div className="flex justify-end space-x-3 mt-6">
-          <Button onClick={onClose}>Skip</Button>
+          <Button onClick={onClose}>{isEditMode ? "Cancel" : "Skip"}</Button>
           <Button
             type="primary"
             htmlType="submit"
             className="bg-sky-500 hover:bg-sky-600"
           >
-            Save & Continue
+            {isEditMode ? "Save Changes" : "Save & Continue"}
           </Button>
         </div>
       </form>
