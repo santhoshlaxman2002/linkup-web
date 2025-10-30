@@ -9,6 +9,7 @@ import { loginUser } from "../../features/auth/authThunks";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { loginSchema } from "../../validations/authValidation";
+import { clearMessages } from "../../features/auth/authSlice";
 
 const initialValues = {
   loginName: "",
@@ -55,6 +56,7 @@ export function LoginForm() {
   const handleSubmit = async (values) => {
     const result = await dispatch(loginUser(values));
     if (result.meta.requestStatus === "fulfilled") {
+      dispatch(clearMessages());
       navigate("/home");
     }
   };
@@ -154,7 +156,7 @@ export function LoginForm() {
       </div>
       <div className="flex justify-center items-center text-center text-sm text-gray-600 pt-1.5 pb-2.5">
         Don't have an account?{" "}
-        <Link to="/register" className="text-indigo-600 hover:text-indigo-400 ml-1 cursor-pointer">Sign up</Link>
+        <Link to="/register" onClick={() => dispatch(clearMessages())} className="text-indigo-600 hover:text-indigo-400 ml-1 cursor-pointer">Sign up</Link>
       </div>
     </>
   );

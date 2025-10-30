@@ -11,6 +11,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { generateUsername } from "../../api/auth";
 import { UsernameField } from "../common/UsernameField";
 import { registerSchema } from "../../validations/authValidation";
+import { clearMessages } from "../../features/auth/authSlice";
 
 const initialValues = {
   firstName: "",
@@ -43,6 +44,7 @@ export function RegisterForm() {
     const result = await dispatch(registerUser(payload));
     if (result.meta.requestStatus === "fulfilled") {
       const email = result.payload?.Data?.email;
+      dispatch(clearMessages());
       navigate("/confirm-email", { state: { email } });
     }
   };
@@ -156,6 +158,7 @@ export function RegisterForm() {
                 placeholder="Password"
                 prefix={<RiLockPasswordLine size={20} className="mr-1"/>}
                 value={values.password}
+                visibilityToggle={false}
                 onChange={handleChange}
                 autoComplete="current-password"
                 size="large"
@@ -217,7 +220,7 @@ export function RegisterForm() {
       </div>
       <div className="flex justify-center items-center text-center text-sm text-gray-600 pt-1.5 pb-2.5">
         Already have an account?{" "}
-        <Link to="/login" className="text-indigo-600 hover:text-indigo-400 ml-1 cursor-pointer">Sign in</Link>
+        <Link to="/login" onClick={() => dispatch(clearMessages())} className="text-indigo-600 hover:text-indigo-400 ml-1 cursor-pointer">Sign in</Link>
       </div>
     </>
   );

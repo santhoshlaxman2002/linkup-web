@@ -9,6 +9,7 @@ import { confirmEmail } from "../../features/auth/authThunks";
 import { maskEmail } from "../../utils/helpers";
 import { confirmEmailSchema } from "../../validations/authValidation";
 import ProfileSetupModal from "../profile/ProfileSetupModal";
+import { clearMessages } from "../../features/auth/authSlice";
 
 export default function ConfirmEmail() {
   const navigate = useNavigate();
@@ -32,7 +33,10 @@ export default function ConfirmEmail() {
       {/* Back button */}
       <div className="flex absolute -top-28 left-0 items-center justify-start mb-2">
         <button
-          onClick={() => navigate("/register")}
+          onClick={() => {
+            dispatch(clearMessages());
+            navigate("/register");
+          }}
           className="flex items-center text-gray-800 hover:text-gray-500 transition cursor-pointer"
         >
           <IoArrowBackSharp size={22} className="mr-1" />
@@ -85,7 +89,13 @@ export default function ConfirmEmail() {
               Continue
             </Button>
 
-            <Button type="link" block onClick={() => navigate("/login")}>
+            <Button type="link" 
+              block 
+              onClick={() => {
+                dispatch(clearMessages());
+                navigate("/login");
+              }}
+            >
               I already have an account
             </Button>
           </Form>

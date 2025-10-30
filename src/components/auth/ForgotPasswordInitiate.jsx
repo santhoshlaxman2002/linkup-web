@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { initiateForgotPasswordThunk } from "../../features/auth/authThunks";
 import { forgotPasswordSchema } from "../../validations/authValidation";
+import { clearMessages } from "../../features/auth/authSlice";
 
 export default function ForgotPasswordInitiate() {
   const navigate = useNavigate();
@@ -27,7 +28,10 @@ export default function ForgotPasswordInitiate() {
     <div className="flex flex-col relative items-center space-y-4 py-6 w-full">
       <div className="flex absolute -top-28 left-0 items-center justify-start mb-2">
         <button
-          onClick={() => navigate("/login")}
+          onClick={() => {
+            dispatch(clearMessages());
+            navigate("/login");
+          }}
           className="flex items-center text-gray-800 hover:text-gray-500 transition cursor-pointer"
         >
           <IoArrowBackSharp size={22} className="mr-1" />
@@ -77,7 +81,14 @@ export default function ForgotPasswordInitiate() {
               Send OTP
             </Button>
 
-            <Button type="link" block onClick={() => navigate("/register")}>
+            <Button
+              type="link"
+              block
+              onClick={() => {
+                dispatch(clearMessages());
+                navigate("/register");
+              }}
+            >
               Or create a new account
             </Button>
           </Form>
