@@ -37,7 +37,10 @@ export default function ForgotPasswordReset() {
     <div className="flex flex-col relative items-center space-y-4 py-6 w-full">
       <div className="flex absolute -top-28 left-0 items-center justify-start mb-2">
         <button
-          onClick={() => navigate("/forgot-password")}
+          onClick={() => {
+            dispatch(clearMessages());
+            navigate("/forgot-password");
+          }}
           className="flex items-center text-gray-800 hover:text-gray-500 transition cursor-pointer"
         >
           <IoArrowBackSharp size={22} className="mr-1" />
@@ -79,6 +82,7 @@ export default function ForgotPasswordReset() {
               placeholder="New password"
               value={values.newPassword}
               onChange={handleChange}
+              visibilityToggle={false}
               size="large"
               prefix={<IoLockClosedOutline size={20} />}
             />
