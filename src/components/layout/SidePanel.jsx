@@ -9,6 +9,7 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
+import LinkUpLogo from "../../assets/logo-erased.png";
 
 const { Sider } = Layout;
 
@@ -81,10 +82,12 @@ export default function SidePanel() {
     >
       {/* Collapse Toggle */}
       <div
-        className="flex justify-end p-4 cursor-pointer hover:text-blue-600"
+        className={`flex p-4 cursor-pointer hover:text-blue-600 ${
+          collapsed ? "justify-center" : "justify-end"
+        }`}
         onClick={() => setCollapsed((prev) => !prev)}
       >
-        {collapsed ? <HiOutlineMenu size={24} /> : <HiOutlineX size={24} />}
+        {collapsed ? <HiOutlineMenu size={20} /> : <HiOutlineX size={24} />}
       </div>
 
       {/* Logo Section */}
@@ -97,8 +100,8 @@ export default function SidePanel() {
             LinkUp
           </div>
         ) : (
-          <div className="text-gray-900 text-xl font-bold hover:text-blue-600 transition-colors duration-300">
-            L
+          <div className="flex justify-center">
+            <img src={LinkUpLogo} alt="LinkUp Logo" className="w-[30px] h-[24px]" />
           </div>
         )}
       </div>
@@ -125,7 +128,6 @@ export default function SidePanel() {
               fontWeight: location.pathname === item.key ? "600" : "normal",
               marginBottom: "2px",
               borderRadius: "12px",
-              padding: "10px 14px",
               display: "flex",
               alignItems: "center",
               gap: "12px",
