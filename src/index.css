@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+/* Prevent icons from shrinking in collapsed sider */
+.ant-menu-item-icon {
+  width: auto !important;
+  min-width: 24px !important;
+  font-size: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
