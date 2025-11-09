@@ -15,6 +15,7 @@ import ProtectedConfirmRoute from './components/routes/ProtectedConfirmRoute'
 import ForgotPasswordReset from './components/auth/ForgotPasswordReset'
 import ForgotPasswordInitiate from './components/auth/ForgotPasswordInitiate'
 import ProtectedResetRoute from './components/routes/ProtectedResetRoute'
+import UserProfileView from './app/pages/UserProfileView'
 
 function App() {
 
@@ -66,6 +67,7 @@ function App() {
         <Route path="/messages" element={<Messages />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/users/:userId" element={<UserProfileView />} />
         <Route path="/search" element={<Search />} />
       </Route>
 

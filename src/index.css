@@ -11,3 +11,24 @@
   flex-shrink: 0 !important;
 }
 
+.scrollable-list {
+  overflow-y: auto;
+  scrollbar-width: thin;               
+  scrollbar-color: #c2c2c2 transparent; /* thumb & track for Firefox */
+}
+
+/* For WebKit-based browsers (Chrome, Safari, Edge) */
+.scrollable-list::-webkit-scrollbar {
+  width: 6px;      /* adjust width as you like */
+}
+.scrollable-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollable-list::-webkit-scrollbar-thumb {
+  background-color: #aaa;
+  border-radius: 3px;
+}
+.scrollable-list::-webkit-scrollbar-thumb:hover {
+  background-color: #888;
+}
+

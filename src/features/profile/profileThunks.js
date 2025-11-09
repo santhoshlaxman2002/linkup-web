@@ -40,3 +40,24 @@ export const updateProfileThunk = createAsyncThunk(
     }
   }
 );
+
+export const getOtherUserProfileThunk = createAsyncThunk(
+  "profile/getOtherUserProfile",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get(`/profiles/${userId}`, {
+        params: {
+          component: "search"
+        }
+      });
+      if (res.data.ResponseCode !== 200) {
+        return rejectWithValue(res.data.ResponseMessage);
+      }
+      return res.data.Data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.ResponseMessage || "Failed to fetch user profile"
+      );
+    }
+  }
+);  
