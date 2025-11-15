@@ -4,13 +4,20 @@ import { AiOutlineGift, AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../features/auth/authSlice';
+import { resetProfile } from '../../features/profile/profileSlice';
+import { resetProfileOther } from '../../features/profile/profileOtherSlice';
+import { resetSearchState } from '../../features/search/searchSlice';
 
 export default function RightSidebar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    // Clear all Redux states
     dispatch(logout());
+    dispatch(resetProfile());
+    dispatch(resetProfileOther());
+    dispatch(resetSearchState());
     navigate('/login');
   };
   return (

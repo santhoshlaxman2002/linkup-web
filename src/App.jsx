@@ -16,10 +16,12 @@ import ForgotPasswordReset from './components/auth/ForgotPasswordReset'
 import ForgotPasswordInitiate from './components/auth/ForgotPasswordInitiate'
 import ProtectedResetRoute from './components/routes/ProtectedResetRoute'
 import UserProfileView from './app/pages/UserProfileView'
+import NavigationInitializer from './components/common/NavigationInitializer'
 
 function App() {
 
   return (
+    <NavigationInitializer>
     <Routes>
       <Route path="/" element={<Navigate to="/login" replace />} />
 
@@ -82,6 +84,7 @@ function App() {
         />
       </Route>
     </Routes>
+    </NavigationInitializer>
   )
 }
 

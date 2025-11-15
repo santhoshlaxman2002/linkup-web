@@ -20,11 +20,17 @@ const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.user = null;
+      state.loading = false;
+      state.error = null;
+      state.successMessage = null;
       localStorage.removeItem("token");
     },
     clearMessages: (state) => {
       state.error = null;
       state.successMessage = null;
+    },
+    resetAuth: (state) => {
+      return initialState;
     },
   },
   extraReducers: (builder) => {
@@ -115,5 +121,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, clearMessages } = authSlice.actions;
+export const { logout, clearMessages, resetAuth } = authSlice.actions;
 export default authSlice.reducer;

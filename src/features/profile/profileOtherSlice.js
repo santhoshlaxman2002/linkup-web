@@ -9,6 +9,9 @@ const initialState = {
 const profileOtherSlice = createSlice({
   name: "profileOther",
   initialState,
+  reducers: {
+    resetProfileOther: () => initialState,
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getOtherUserProfileThunk.pending, (state) => {
@@ -26,4 +29,5 @@ const profileOtherSlice = createSlice({
   },
 });
 
+export const { resetProfileOther } = profileOtherSlice.actions;
 export default profileOtherSlice.reducer;

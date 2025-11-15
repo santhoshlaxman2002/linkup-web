@@ -40,7 +40,7 @@ const UserProfileView = () => {
 
     // Determine friendship action label
     let actionLabel = "Request";
-    if (user.friendship_status === "friends") actionLabel = "Friends";
+    if (user.friendship_status === "accepted") actionLabel = "Friends";
     else if (user.friendship_status === "pending") actionLabel = "Pending";
 
     return (
