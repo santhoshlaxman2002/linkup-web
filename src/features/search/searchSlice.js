@@ -36,6 +36,7 @@ const searchSlice = createSlice({
       state.recentOffset = 0;
       state.recentHasMore = true;
     },
+    resetSearchState: () => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -98,5 +99,5 @@ const searchSlice = createSlice({
   },
 });
 
-export const { resetSearch, setSearchQuery, resetRecentSearches } = searchSlice.actions;
+export const { resetSearch, setSearchQuery, resetRecentSearches, resetSearchState } = searchSlice.actions;
 export default searchSlice.reducer;
