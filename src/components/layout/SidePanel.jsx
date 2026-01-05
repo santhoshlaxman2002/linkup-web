@@ -5,6 +5,7 @@ import {
   AiOutlineSearch,
   AiOutlineMessage,
   AiOutlineHeart,
+  AiOutlineUser,
 } from "react-icons/ai";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -46,6 +47,11 @@ export default function SidePanel() {
   const menuItems = [
     { key: "/home", icon: <AiFillHome size={24} />, label: "Home" },
     { key: "/search", icon: <AiOutlineSearch size={24} />, label: "Search", onClick: () => setOpenSearch(true) },
+    {
+      key: "/friends",
+      icon: <AiOutlineUser size={24} />,
+      label: "Friends",
+    },
     {
       key: "/messages",
       icon: <AiOutlineMessage size={24} />,

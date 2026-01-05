@@ -7,6 +7,7 @@ import { logout } from '../../features/auth/authSlice';
 import { resetProfile } from '../../features/profile/profileSlice';
 import { resetProfileOther } from '../../features/profile/profileOtherSlice';
 import { resetSearchState } from '../../features/search/searchSlice';
+import { clearFriends } from '../../features/friends/friendsSlice';
 
 export default function RightSidebar() {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ export default function RightSidebar() {
     dispatch(resetProfile());
     dispatch(resetProfileOther());
     dispatch(resetSearchState());
+    dispatch(clearFriends());
     navigate('/login');
   };
   return (

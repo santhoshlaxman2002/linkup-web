@@ -3,6 +3,7 @@ import authReducer from "../features/auth/authSlice";
 import profileReducer from "../features/profile/profileSlice";
 import otherProfileReducer from "../features/profile/profileOtherSlice";
 import searchReducer from "../features/search/searchSlice";
+import friendsReducer from "../features/friends/friendsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     profile: profileReducer,
     search: searchReducer,
     profileOther: otherProfileReducer,
+    friends: friendsReducer,
   },
 });
 
