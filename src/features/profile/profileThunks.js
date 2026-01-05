@@ -60,4 +60,96 @@ export const getOtherUserProfileThunk = createAsyncThunk(
       );
     }
   }
+);
+
+// Send friend request
+export const sendFriendRequestThunk = createAsyncThunk(
+  "profile/sendFriendRequest",
+  async (receiverId, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.post("/friends/request", {
+        receiverId: receiverId,
+      });
+      if (res.data.ResponseCode !== 200) {
+        return rejectWithValue(res.data.ResponseMessage);
+      }
+      return res.data.Data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.ResponseMessage || "Failed to send friend request"
+      );
+    }
+  }
+);
+
+// Accept friend request
+export const acceptFriendRequestThunk = createAsyncThunk(
+  "profile/acceptFriendRequest",
+  async (requestId, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.post(`/friends/accept/${requestId}`);
+      if (res.data.ResponseCode !== 200) {
+        return rejectWithValue(res.data.ResponseMessage);
+      }
+      return res.data.Data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.ResponseMessage || "Failed to accept friend request"
+      );
+    }
+  }
+);
+
+// Reject friend request
+export const rejectFriendRequestThunk = createAsyncThunk(
+  "profile/rejectFriendRequest",
+  async (requestId, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.post(`/friends/reject/${requestId}`);
+      if (res.data.ResponseCode !== 200) {
+        return rejectWithValue(res.data.ResponseMessage);
+      }
+      return res.data.Data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.ResponseMessage || "Failed to reject friend request"
+      );
+    }
+  }
+);
+
+// Cancel friend request (by sender)
+export const cancelFriendRequestThunk = createAsyncThunk(
+  "profile/cancelFriendRequest",
+  async (requestId, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.post(`/friends/cancel/${requestId}`);
+      if (res.data.ResponseCode !== 200) {
+        return rejectWithValue(res.data.ResponseMessage);
+      }
+      return res.data.Data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.ResponseMessage || "Failed to cancel friend request"
+      );
+    }
+  }
+);
+
+// Unfriend (delete friendship)
+export const unfriendThunk = createAsyncThunk(
+  "profile/unfriend",
+  async (friendshipId, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.delete(`/friends/${friendshipId}`);
+      if (res.data.ResponseCode !== 200) {
+        return rejectWithValue(res.data.ResponseMessage);
+      }
+      return res.data.Data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.ResponseMessage || "Failed to unfriend"
+      );
+    }
+  }
 );  

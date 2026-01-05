@@ -6,7 +6,7 @@ import debounce from "lodash.debounce";
 import { clearAllRecentSearchesThunk, clearRecentSearchThunk, fetchRecentSearchesThunk, searchUsersThunk } from "../../features/search/searchThunks";
 import { resetRecentSearches, resetSearch, setSearchQuery } from "../../features/search/searchSlice";
 import { useNavigate } from "react-router-dom";
-import { CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined, UserOutlined } from "@ant-design/icons";
 
 const SearchDrawer = ({ open, onClose }) => {
     const dispatch = useDispatch();
@@ -130,7 +130,7 @@ const SearchDrawer = ({ open, onClose }) => {
                                             navigate(`/users/${item.id}`);
                                         }}
                                     >
-                                        <Avatar src={item.profile_image_url} size={38} className="bg-gray-400" />
+                                        <Avatar src={item.profile_image_url} size={38} className="bg-gray-400" icon={<UserOutlined />}/>
                                         <div className="flex flex-col">
                                             <div className="text-gray-800 font-medium">
                                                 {item.first_name} {item.last_name}
@@ -166,7 +166,7 @@ const SearchDrawer = ({ open, onClose }) => {
                                     style={{ alignItems: "center" }}
                                 >
                                     <List.Item.Meta
-                                        avatar={<Avatar src={item.profile_image_url} size={38} className="bg-gray-400" />}
+                                        avatar={<Avatar src={item.profile_image_url} size={38} className="bg-gray-400" icon={<UserOutlined />} />}
                                         title={<div className="text-gray-800 font-medium">{item.first_name} {item.last_name}</div>}
                                         description={`@${item.username}`}
                                     />

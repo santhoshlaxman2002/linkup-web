@@ -8,6 +8,7 @@ import Messages from './app/pages/Messages'
 import Notifications from './app/pages/Notifications'
 import Profile from './app/pages/Profile'
 import Search from './app/pages/Search'
+import Friends from './app/pages/Friends'
 import PublicRoute from './components/routes/PublicRoute'
 import ProtectedRoute from './components/routes/ProtectedRoute'
 import ConfirmEmail from './components/auth/ConfirmEmail'
@@ -66,6 +67,7 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<Navigate to="/home" replace />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/friends" element={<Friends />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/profile" element={<Profile />} />
