@@ -2,24 +2,24 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Skeleton, Avatar, Button, message, Dropdown } from "antd";
-import { 
-  UserAddOutlined, 
-  UserDeleteOutlined, 
-  CloseOutlined,
-  DownOutlined,
-  MessageOutlined,
-  StarOutlined,
-  EditOutlined,
-  UserOutlined
+import { Skeleton, Avatar, Button, message, Dropdown, Image } from "antd";
+import {
+    UserAddOutlined,
+    UserDeleteOutlined,
+    CloseOutlined,
+    DownOutlined,
+    MessageOutlined,
+    StarOutlined,
+    EditOutlined,
+    UserOutlined
 } from "@ant-design/icons";
 import {
-  getOtherUserProfileThunk,
-  sendFriendRequestThunk,
-  acceptFriendRequestThunk,
-  rejectFriendRequestThunk,
-  cancelFriendRequestThunk,
-  unfriendThunk,
+    getOtherUserProfileThunk,
+    sendFriendRequestThunk,
+    acceptFriendRequestThunk,
+    rejectFriendRequestThunk,
+    cancelFriendRequestThunk,
+    unfriendThunk,
 } from "../../features/profile/profileThunks";
 import LayoutWrapper from "../../components/layout/LayoutWrapper";
 
@@ -179,7 +179,7 @@ const UserProfileView = () => {
     // Determine friendship action label and buttons
     let actionLabel = "Request";
     let showAcceptReject = false;
-    
+
     if (user.friendship_status === "accepted") {
         actionLabel = "Friends";
     } else if (user.friendship_status === "pending") {
@@ -203,12 +203,20 @@ const UserProfileView = () => {
 
                 {/* Avatar */}
                 <div className="absolute top-36 sm:top-44 md:top-52 left-4 sm:left-8">
-                    <div className="rounded-full border-4 border-white shadow-md">
-                        <Avatar
-                            size={90}
-                            icon={<UserOutlined />}
+                    <div className="rounded-full border-4 border-white shadow-md overflow-hidden cursor-pointer hover:shadow-xl transition-shadow">
+                        <Image
+                            width={90}
+                            height={90}
                             src={user.profile_image_url || "/images/default-avatar.png"}
-                            className="sm:!w-[100px] sm:!h-[100px]"
+                            preview={{
+                                mask: <div className="flex items-center justify-center">Click to view</div>,
+                                icons: {
+                                    close: <CloseOutlined />,
+                                },
+                            }}
+                            className="sm:!w-[100px] sm:!h-[100px] object-cover"
+                            fallback="/images/default-avatar.png"
+                            style={{ borderRadius: '50%' }}
                         />
                     </div>
                 </div>
@@ -263,9 +271,9 @@ const UserProfileView = () => {
                                     >
                                         {actionLabel}
                                     </Button>
-                                    <Button 
-                                        type="default" 
-                                        shape="round" 
+                                    <Button
+                                        type="default"
+                                        shape="round"
                                         icon={<MessageOutlined />}
                                         onClick={() => {/* message logic */ }}
                                     >
@@ -273,7 +281,7 @@ const UserProfileView = () => {
                                     </Button>
                                     <Dropdown
                                         menu={{
-                                            items: user.friendship_status === "requested" 
+                                            items: user.friendship_status === "requested"
                                                 ? [
                                                     {
                                                         key: "cancel",
@@ -288,13 +296,13 @@ const UserProfileView = () => {
                                                         key: "favourites",
                                                         label: "Favourites",
                                                         icon: <StarOutlined />,
-                                                        onClick: () => {/* favourites logic */},
+                                                        onClick: () => {/* favourites logic */ },
                                                     },
                                                     {
                                                         key: "edit",
                                                         label: "Edit Friend List",
                                                         icon: <EditOutlined />,
-                                                        onClick: () => {/* edit friend list logic */},
+                                                        onClick: () => {/* edit friend list logic */ },
                                                     },
                                                     {
                                                         key: "unfriend",
@@ -308,9 +316,9 @@ const UserProfileView = () => {
                                         }}
                                         trigger={["click"]}
                                     >
-                                        <Button 
-                                            type="default" 
-                                            shape="round" 
+                                        <Button
+                                            type="default"
+                                            shape="round"
                                             icon={<DownOutlined />}
                                             loading={cancelingRequest || unfriending}
                                         />
@@ -327,9 +335,9 @@ const UserProfileView = () => {
                                     >
                                         {actionLabel}
                                     </Button>
-                                    <Button 
-                                        type="default" 
-                                        shape="round" 
+                                    <Button
+                                        type="default"
+                                        shape="round"
                                         icon={<MessageOutlined />}
                                         onClick={() => {/* message logic */ }}
                                     >
@@ -357,7 +365,7 @@ const UserProfileView = () => {
                             </div>
                         </div>
                     )}
-    
+
                     {/* Bio */}
                     {user.bio && (
                         <p className="mt-4 text-gray-600 text-sm sm:text-base leading-relaxed">
