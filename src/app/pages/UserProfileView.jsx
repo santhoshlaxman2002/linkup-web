@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Skeleton, Avatar, Button, message, Dropdown, Image } from "antd";
+import { Spin, Avatar, Button, message, Dropdown, Image } from "antd";
 import {
     UserAddOutlined,
     UserDeleteOutlined,
@@ -161,8 +161,8 @@ const UserProfileView = () => {
     if (loading) {
         return (
             <LayoutWrapper>
-                <div className="p-6">
-                    <Skeleton active avatar title />
+                <div className="flex items-center justify-center p-16">
+                    <Spin size="large" />
                 </div>
             </LayoutWrapper>
         );
@@ -268,6 +268,11 @@ const UserProfileView = () => {
                                         type={user.friendship_status === "accepted" ? "primary" : "default"}
                                         shape="round"
                                         icon={user.friendship_status === "accepted" ? <UserOutlined /> : <UserAddOutlined />}
+                                        style={
+                                            user.friendship_status === "requested"
+                                                ? { backgroundColor: "#faad14", borderColor: "#faad14", color: "#fff" }
+                                                : {}
+                                        }
                                     >
                                         {actionLabel}
                                     </Button>

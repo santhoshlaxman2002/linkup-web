@@ -4,6 +4,7 @@ import profileReducer from "../features/profile/profileSlice";
 import otherProfileReducer from "../features/profile/profileOtherSlice";
 import searchReducer from "../features/search/searchSlice";
 import friendsReducer from "../features/friends/friendsSlice";
+import postsReducer from "../features/posts/postsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     search: searchReducer,
     profileOther: otherProfileReducer,
     friends: friendsReducer,
+    posts: postsReducer,
   },
 });
 
